@@ -1,84 +1,78 @@
-let url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
-let Api__key ="AIzaSyAxlRzifCn9MA8kDrtqlNY2mMvI3KzZ3ss";
+let url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
+let Api__key = "AIzaSyAxlRzifCn9MA8kDrtqlNY2mMvI3KzZ3ss";
 
-let language ="en-US";
-let playload ={
-  "contents": [{
-    "parts":
-    [{"text": "Explain how AI works"}
-    ]
+let language = "en-US";
+let payload = {
+    "contents": [{
+        "parts": [{"text": "Explain how AI works"}]
     }]
-   }
-   
-function changelanguage(event){
-    let language = event.target.value;
-console.log(language);
+};
+
+function changelanguage(event) {
+    language = event.target.value;
+    console.log("Language changed to:", language);
 }
 
 let recognize = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 let saySpeech = window.speechSynthesis;
 let useroutput = document.querySelector(".output");
 let input = document.querySelector(".input");
-if(!recognize){
+
+if (!recognize) {
     alert("Your browser does not support speech recognition. Please use a compatible browser.");
-}{
-    const getData = ()=>{
-        let data = axios.post(`${url}+${Api__key}`,playload)
-        .then((Response)=>{
-            let output = Response.data.candidates[0].content.parts[0].text;
-            console.log(Response.data.candidates[0].content.parts[0].text);
+}
+
+const getData = () => {
+    axios.post(`${url}${Api__key}`, payload)
+        .then((response) => {
+            let output = response.data.candidates[0].content.parts[0].text;
+            console.log(output);
 
             let formattedOutput = output.replace(/\*\*/g, "").replace(/\*/g, "<li>") + "</li>";
             useroutput.innerHTML = `<ul>${formattedOutput}</ul>`;
 
-
-            Speaks("As designed by Srujan Akula, I am here to assisting you" + output);;
-        }).catch((err)=>{
-    console.log(err);
+            Speaks("As designed by Srujan Akula, I am here to assist you. " + output);
         })
-       }
-recognize.lang = language;;
+        .catch((err) => {
+            console.log("Error fetching AI response:", err);
+        });
+};
+
+recognize.lang = language;
 recognize.interimResults = false;
 recognize.maxAlternatives = 1;
 
-recognize.onresult = (event)=>{
+recognize.onresult = (event) => {
+    stopSpeaking(); // Stop previous speech before listening
     let recognizeresul = event.results[0][0].transcript;
-    console.log(event.results[0][0].transcript);
-    input.innerHTML = recognizeresul
-    playload.contents[0].parts[0].text = recognizeresul;
-    getData();
-   
-    
-}
+    console.log("User input:", recognizeresul);
+    input.innerHTML = recognizeresul;
 
-const Speaks = (text)=>{
+    payload.contents[0].parts[0].text = recognizeresul;
+    getData();
+};
+
+const Speaks = (text) => {
+    stopSpeaking(); // Stop previous speech before speaking new output
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = language;
     let voices = speechSynthesis.getVoices();
 
-    // Select a voice for Hindi or Telugu
-    if (language === "hi-IN") {
-        utterance.voice = voices.find(voice => voice.lang === "hi-IN") || voices[0];
-    } else if (language === "te-IN") {
-        utterance.voice = voices.find(voice => voice.lang === "te-IN") || voices[0];
-    }
-    // Select a voice for English
-    else if (language === "en-US") {
-        utterance.voice = voices.find(voice => voice.lang === "en-US") || voices[0];
-    } else {
-        utterance.voice = voices[0]; // Default voice
-    }
+    // Select the appropriate voice
+    utterance.voice = voices.find(voice => voice.lang === language) || voices[0];
+
     saySpeech.speak(utterance);
-}
+};
+
+// Function to stop AI speech before speaking a new response
 function stopSpeaking() {
     saySpeech.cancel();
-    console.log("AI speech stopped.");
-     
+    console.log("Stopped previous speech.");
 }
 
+// Function to start listening
 function startListening() {
+    stopSpeaking(); // Stop previous speech before listening
     recognize.start();
-    console.log("recognizing the words");
-}
-
+    console.log("Recognizing words...");
 }
