@@ -32,7 +32,7 @@ if(!recognize){
             useroutput.innerHTML = `<ul>${formattedOutput}</ul>`;
 
 
-            Speaks("As designed by Sai kiran Akula, I am here to assisting you" + output);;
+            Speaks("As designed by Srujan Akula, I am here to assisting you" + output);;
         }).catch((err)=>{
     console.log(err);
         })
