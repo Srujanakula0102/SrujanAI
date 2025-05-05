@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="Ai.css"></link>
+</head>
+<body>
+    <div class="container">
+        <h2>AI Assistent by @SaiSrujan</h2>
+<div class="btn">
+    <div class="btn1" >
+        <img src="family.jpg" width="200" height="200" alt="AI Image">
+        <button onclick="startListening()" >Talk to Srujan</button>
+        <button onclick="stopSpeaking()">Stop AI Speech</button> <!-- Added stop button -->
+            
+    </div >
+    <label >Select Language:</label>
+    <select class="language" id="language" onchange="changelanguage(event)">
+        <option value="en-US">English</option>
+        <option value="hi-IN">hindi</option>
+        <option value="te-In">Telugu</option>
+    </select>
+</div>
+<h4 class="input"></h4>
+<h4 class="output"></h4>
+    </div>
+</body>
+<script src="Ai.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+</html>
